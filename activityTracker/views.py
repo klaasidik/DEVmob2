@@ -71,7 +71,7 @@ def delete_user(request, email):
 def disable_user(request, email):
     try:
         user = User.objects.get(email=email)
-        user.active = not user.is_active
+        user.is_superuser = not user.is_superuser
         user.save()
         return HttpResponse('Utilisateur désactivé avec succès', status=200)
     except User.DoesNotExist:

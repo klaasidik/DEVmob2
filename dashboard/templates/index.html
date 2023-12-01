@@ -70,7 +70,7 @@
       <h1>Dashboard</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item"><a href="">Home</a></li>
           <li class="breadcrumb-item active">Dashboard</li>
         </ol>
       </nav>
@@ -110,7 +110,7 @@
                         <td>{{ user.prenom|add:" "}} {{ user.nom }}</td>
                         <td>{{ user.nb_activ }}</td>
                         <td>{{ user.last_login }}</td>
-                        {% if user.is_active %}
+                        {% if user.is_superuser %}
                         <td><span class="badge bg-success">Activé</span></td>
                         {% else %}
                         <td><span class="badge bg-danger">Désactivé</span></td>
@@ -118,7 +118,7 @@
 
                         <td> 
                           <button style="background: none; border: none; cursor: pointer;" onclick="disableUser('{{ user.email }}',this)">
-                            {% if not user.active %}
+                            {% if not user.is_superuser %}
                             <i class="fa-solid fa-circle-check" style="color: #03c700;"></i>
                             {% else %}
                            <i class="fa-solid fa-ban" style="color: #fa0000;"></i> 
