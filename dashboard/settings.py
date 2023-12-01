@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'social_django',
     'activityTracker.apps.ActivitytrackerConfig',
+    'rest_framework',
+     'rest_framework.authtoken'
+
 
 ]
 
@@ -54,6 +57,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'dashboard.urls'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
 
 TEMPLATES = [
     {
