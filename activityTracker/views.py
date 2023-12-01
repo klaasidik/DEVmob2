@@ -5,14 +5,21 @@ from .models import User,Activity,Acceleration,Gylocation,Gyroscope
 import json
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 # Create your views here.
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def api_get_User(request):
     users=User.objects.all()
     json=serializers.serialize("json",users)
     return HttpResponse(json)
 
-require_http_methods(["POST"])
-@csrf_exempt
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def api_add_User(request):
     try:
         data = json.loads(request.body)
@@ -30,8 +37,9 @@ def api_add_User(request):
         print(e)
         return HttpResponse(f'Error: {str(e)}', status=500)
     
-@require_http_methods(["POST"])
-@csrf_exempt
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def api_add_Activity(request):
     try:
         data = json.loads(request.body)
@@ -56,8 +64,9 @@ def api_add_Activity(request):
     except Exception as e:
         return HttpResponse(f'Error: {str(e)}', status=500)
     
-@require_http_methods(["DELETE"])
-@csrf_exempt
+@api_view(['DELETE'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def delete_user(request, email):
     try:
         user = User.objects.get(email=email)
@@ -66,8 +75,9 @@ def delete_user(request, email):
     except User.DoesNotExist:
         return HttpResponse('Utilisateur non trouvé', status=404)
     
-@require_http_methods(["PATCH"])
-@csrf_exempt
+@api_view(['PATCH'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def disable_user(request, email):
     try:
         user = User.objects.get(email=email)
