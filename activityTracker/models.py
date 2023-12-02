@@ -57,6 +57,27 @@ class User(AbstractBaseUser, PermissionsMixin):
         user.set_password(motDePasse)
         user.save()
         return user
+    
+    @classmethod
+    def edit_user(cls, email, nom=None, prenom=None, dateDeNaissance=None, poids=None, taille=None, motDePasse=None):
+            user = cls.objects.get(email=email)
+
+            if nom is not None:
+                user.nom = nom
+            if prenom is not None:
+                user.prenom = prenom
+            if dateDeNaissance is not None:
+                user.dateDeNaissance = dateDeNaissance
+            if poids is not None:
+                user.poids = poids
+            if taille is not None:
+                user.taille = taille
+            if motDePasse is not None:
+                user.set_password(motDePasse)
+
+            user.save()
+            return user
+       
 
 # Create your models here.
 class Activity(models.Model):

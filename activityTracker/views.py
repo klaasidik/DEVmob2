@@ -86,3 +86,22 @@ def disable_user(request, email):
         return HttpResponse('Utilisateur désactivé avec succès', status=200)
     except User.DoesNotExist:
         return HttpResponse('Utilisateur non trouvé', status=404)
+    
+@api_view(['PATCH'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def edit_user(request, email):
+    try:
+        data = json.loads(request.body)
+        user = User.edit_user(
+        email=email,
+        nom=data.get('nom'),
+        prenom=data.get('prenom'),
+        dateDeNaissance=data.get('dateDeNaissance'),
+        poids=data.get('poids'),
+        taille=data.get('taille'),
+        motDePasse=data.get('motDePasse')  
+        )
+        return HttpResponse('Utilisateur désactivé avec succès', status=200)
+    except User.DoesNotExist:
+        return HttpResponse('Utilisateur non trouvé', status=404)
