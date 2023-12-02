@@ -9,7 +9,7 @@ urlpatterns = [
   path('addUser', views.api_add_User),
   path('delete/<str:email>/',views.delete_user, name='delete_user'),
   path('disable/<str:email>/', views.disable_user, name='disable_user'),
-  path('editUSer', views.edit_user, name='edit_user'),
+  path('editUSer/<str:email>/', views.edit_user, name='edit_user'),
   path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
 
   
