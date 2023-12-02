@@ -18,8 +18,7 @@ def api_get_User(request):
     return HttpResponse(json)
 
 @api_view(['POST'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
+@csrf_exempt
 def api_add_User(request):
     try:
         data = json.loads(request.body)
