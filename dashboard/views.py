@@ -29,12 +29,15 @@ def login_view(request):
             user = form.get_user()
             login(request, user)
 
-            # Envoyez une requête à l'API pour obtenir le token
-            response = requests.post(
-                'https://sidikklaa.pythonanywhere.com/apimob/api-token-auth/',  # Remplacez par l'URL de votre API
-                data={'username': request.POST['username'], 'password': request.POST['password']}
-            )
-            if response.status_code == 200:
+            try:
+                # Envoyez une requête à l'API pour obtenir le token
+                response = requests.post(
+                    'https://sidikklaa.pythonanywhere.com/apimob/api-token-auth/',
+                    data={'username': request.POST['username'], 'password': request.POST['password']}
+                )
+                response.raise_for_status()  # This will raise an HTTPError if the HTTP request returned an unsuccessful status code
+
+                # Assuming the response was successful, handle the token
                 token = response.json().get('token')
                 response = redirect('/index')
                 response.set_cookie('auth_token', token)  # stocker le token dans un cookie
@@ -42,8 +45,14 @@ def login_view(request):
                 request.session['auth_token'] = token  # stocker le token dans la session
                 return response
 
+            except requests.exceptions.RequestException as e:
+                # Handle any exceptions that occur during the API request
+                print(f"API request failed: {e}")
+                # You might want to add some logic here to handle different types of exceptions
+
     else:
         form = AuthenticationForm()
+
     return render(request, 'login.html', {'form': form})
 
 def google_login(request):
