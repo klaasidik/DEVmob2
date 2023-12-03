@@ -31,7 +31,7 @@ def login_view(request):
 
             # Envoyez une requête à l'API pour obtenir le token
             response = requests.post(
-                'https://127.0.0.1:8000/apimob/api-token-auth/',  # Remplacez par l'URL de votre API
+                'https://sidikklaa.pythonanywhere.comapimob/api-token-auth/',  # Remplacez par l'URL de votre API
                 data={'username': request.POST['username'], 'password': request.POST['password']}
             )
             if response.status_code == 200:
