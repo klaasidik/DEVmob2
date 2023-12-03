@@ -1,8 +1,34 @@
+<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-auth.js"></script>
+<script>
+    const firebaseConfig = {
+  apiKey: "AIzaSyCmTIcFGpM7Dvue4AaveWy7X4iSozsKnto",
+  authDomain: "dashboard-101c3.firebaseapp.com",
+  projectId: "dashboard-101c3",
+  storageBucket: "dashboard-101c3.appspot.com",
+  messagingSenderId: "118658510273",
+  appId: "1:118658510273:web:ff980148890cdcef801340",
+  measurementId: "G-ZB3C7WL2MS"
+};
+firebase.initializeApp(firebaseConfig);
+
+function googleLogin() {
+  var provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithPopup(provider).then(function(result) {
+    // Le token d'authentification Firebase
+    var token = result.credential.accYessToken;
+    // Envoyer le token au serveur Django pour vérification
+    // Vous pouvez utiliser AJAX ou rediriger avec le token en tant que paramètre
+  }).catch(function(error) {
+    console.log(error);
+  });}
+
+</script>
+
 <h2>Login</h2>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Login</button>
-    <a href="{% url 'google_login' %}">Se connecter avec Google</a>
-
 </form>
+<button onclick="googleLogin()">Connexion avec Google</button>

@@ -7,6 +7,9 @@ from firebase_admin import auth
 from activityTracker.models import User
 from django.db.models import Count
 from .forms import CustomUserCreationForm
+import requests
+import firebase_admin
+
 
 def register(request):
     if request.method == 'POST':
@@ -25,7 +28,20 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('/index')  
+
+            # Envoyez une requête à l'API pour obtenir le token
+            response = requests.post(
+                'http://127.0.0.1:8000/apimob/api-token-auth/',  # Remplacez par l'URL de votre API
+                data={'username': request.POST['username'], 'password': request.POST['password']}
+            )
+            if response.status_code == 200:
+                token = response.json().get('token')
+                response = redirect('/index')
+                response.set_cookie('auth_token', token)  # stocker le token dans un cookie
+                # ou
+                request.session['auth_token'] = token  # stocker le token dans la session
+                return response
+
     else:
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
@@ -38,6 +54,24 @@ def google_login(request):
     else:
         # L'utilisateur est déjà authentifié, vous pouvez le rediriger
         return redirect('/index')  # Remplacez 'home' par votre URL de redirection
+    
+def get_or_create_user(decoded_token):
+    uid = decoded_token['uid']
+    email = decoded_token.get('email')
+    name = decoded_token.get('name')
+
+    user, created = User.objects.get_or_create(username=uid, defaults={'email': email, 'nom': name})
+    return user
+
+def custom_login_view(request, token):
+    try:
+        decoded_token = auth.verify_id_token(token)
+        user = get_or_create_user(decoded_token)
+        login(request, user)  # Connecte l'utilisateur
+        return redirect('/index')  # Remplacez par l'URL de redirection souhaitée
+    except auth.InvalidIdTokenError:
+        return redirect('/login')
+
 
 
 def is_admin(user):
@@ -56,3 +90,9 @@ def index(request):
 def not_admin(request):
     logout(request)
     return render(request, 'not_admin.html')
+
+def logout_view(request):
+    logout(request)
+    response = redirect('/login')
+    response.delete_cookie('auth_token')  # Supprimez le cookie si vous stockez le token dans un cookie
+    return response

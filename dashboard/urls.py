@@ -30,6 +30,7 @@ urlpatterns = [
     path('apimob/', include('activityTracker.urls')),
     path('index/', views.index, name='index'),
     path('not-admin/', views.not_admin, name='not_admin'),
+    path('logout/', views.logout_view, name='logout'),
 
 ]
 

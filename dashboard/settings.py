@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os 
+import firebase_admin
+from firebase_admin import credentials
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 print(BASE_DIR)
@@ -149,3 +151,9 @@ LOGIN_REDIRECT_URL = '/index'  # Remplacez 'home' par le nom de votre URL de red
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+# Chemin vers  fichier de clé privée 
+cred = credentials.Certificate(os.path.join(BASE_DIR, 'privee/dashboard-101c3-firebase-adminsdk-sbe9w-f730277c79.json'))
+
+# Initialisation de l'application Firebase Admin
+firebase_admin.initialize_app(cred)
