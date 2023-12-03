@@ -79,7 +79,6 @@ def is_admin(user):
 
 
 
-@login_required
 def index(request):
     if request.user.is_staff or request.user.is_superuser:
        users= User.objects.annotate(nb_activ=Count('activity')) 
