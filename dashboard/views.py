@@ -7,6 +7,7 @@ from firebase_admin import auth
 from activityTracker.models import User
 from django.db.models import Count
 from .forms import CustomUserCreationForm
+from rest_framework.authtoken.models import Token
 import requests
 import firebase_admin
 
@@ -29,19 +30,14 @@ def login_view(request):
             user = form.get_user()
             login(request, user)
 
-            # Envoyez une requête à l'API pour obtenir le token
-            response = requests.post(
-                'https://sidikklaa.pythonanywhere.com/apimob/api-token-auth/',  # Remplacez par l'URL de votre API
-                data={'username': request.POST['username'], 'password': request.POST['password']}
-            )
-            if response.status_code == 200:
-                token = response.json().get('token')
-                response = redirect('/index')
-                response.set_cookie('auth_token', token)  # stocker le token dans un cookie
-                # ou
-                request.session['auth_token'] = token  # stocker le token dans la session
-                return response
-
+            # Créer ou récupérer un token pour l'utilisateur
+            token, created = Token.objects.get_or_create(user=user)
+            
+            response = redirect('/index')
+            response.set_cookie('auth_token', token.key)  # stocker le token dans un cookie
+            # ou
+            request.session['auth_token'] = token.key  # stocker le token dans la session
+            return response
     else:
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
