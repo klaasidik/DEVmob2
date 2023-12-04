@@ -31,6 +31,7 @@ urlpatterns = [
     path('index/', views.index, name='index'),
     path('not-admin/', views.not_admin, name='not_admin'),
     path('logout/', views.logout_view, name='logout'),
+    path('login_firebase/', views.custom_login_view, name='login_firebase'),
 
 ]
 

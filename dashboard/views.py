@@ -59,13 +59,21 @@ def get_or_create_user(decoded_token):
     user, created = User.objects.get_or_create(username=uid, defaults={'email': email, 'nom': name})
     return user
 
-def custom_login_view(request, token):
+def custom_login_view(request):
+    token = request.POST.get('token')
     try:
+        # Vérification du token Firebase
         decoded_token = auth.verify_id_token(token)
-        user = get_or_create_user(decoded_token)
-        login(request, user)  # Connecte l'utilisateur
-        return redirect('/index')  # Remplacez par l'URL de redirection souhaitée
+        email = decoded_token.get('email')
+
+        # Récupérer ou créer un utilisateur basé sur l'e-mail
+        user, created = User.objects.get_or_create(email=email, defaults={'username': email})
+        
+        # Connecter l'utilisateur
+        login(request, user)
+        return redirect('/index')
     except auth.InvalidIdTokenError:
+        # Gestion des tokens invalides
         return redirect('/login')
 
 

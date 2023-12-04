@@ -17,7 +17,22 @@ function googleLogin() {
   firebase.auth().signInWithPopup(provider).then(function(result) {
     // Le token d'authentification Firebase
     var token = result.credential.accYessToken;
-    console.log(result);
+    $.ajax({
+    url: '/login_firebase/',  // L'URL de votre vue Django pour traiter le token
+    method: 'POST',
+    data: {
+      'token': token
+    },
+    success: function(response) {
+      // Traitement en cas de succès (ex : redirection ou mise à jour de l'interface utilisateur)
+      console.log('Token vérifié avec succès');
+      window.location.href = '/index';  // Redirection vers la page d'accueil, par exemple
+    },
+    error: function(error) {
+      // Traitement en cas d'erreur
+      console.error('Erreur lors de la vérification du token:', error);
+    }
+  });
     // Envoyer le token au serveur Django pour vérification
     // Vous pouvez utiliser AJAX ou rediriger avec le token en tant que paramètre
   }).catch(function(error) {
