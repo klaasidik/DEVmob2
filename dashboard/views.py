@@ -73,7 +73,7 @@ def custom_login_view(request):
         
         # Connecter l'utilisateur
         login(request, user)
-        return JsonResponse({'status': 'success', 'decoded_token': decoded_token})
+        return JsonResponse({'status': 'success', 'decoded_token': "ssdqsdqdqdq"})
     except auth.InvalidIdTokenError:
         # Gestion des tokens invalides
         return redirect('/login')
