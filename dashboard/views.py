@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import UserCreationForm
@@ -62,8 +63,9 @@ def get_or_create_user(decoded_token):
 
 @csrf_exempt
 def custom_login_view(request):
-    print("sssss")
-    ##token = request.POST.get('token')
+ 
+ return HttpResponse('Une erreur inconnue s’est produite', status=500)  
+  ##token = request.POST.get('token')
     #try:
         # Vérification du token Firebase
         #decoded_token = auth.verify_id_token(token)
