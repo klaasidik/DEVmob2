@@ -74,7 +74,7 @@ def custom_login_view(request):
         return redirect('/index')
     except auth.InvalidIdTokenError:
         # Gestion des tokens invalides
-        return redirect('/login')
+        return redirect('/index')
 
 
 
