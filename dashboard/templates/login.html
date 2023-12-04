@@ -34,7 +34,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken') // Assurez-vous d'envoyer le CSRF token
+                        //'X-CSRFToken': getCookie('csrftoken') // Assurez-vous d'envoyer le CSRF token
                     },
                     body: JSON.stringify({
                         uid: user.uid,
