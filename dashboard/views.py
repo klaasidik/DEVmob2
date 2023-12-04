@@ -70,7 +70,7 @@ def custom_login_view(request):
         email = decoded_token.get('email')
 
         # Récupérer ou créer un utilisateur basé sur l'e-mail
-        user, created = User.objects.get_or_create(email=email, defaults={'username': email})
+        user = get_or_create_user(decoded_token)
         
         # Connecter l'utilisateur
         login(request, user)
