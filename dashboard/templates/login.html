@@ -21,7 +21,7 @@ function googleLogin() {
 
     // Envoyer le token au serveur Django pour vérification
     $.ajax({
-      url: '/chemin/vers/custom_login_view',
+      url: '/login_firebase/',
       method: 'POST',
       data: {
         'token': token
