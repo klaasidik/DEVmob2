@@ -64,7 +64,6 @@ def get_or_create_user(decoded_token):
 def custom_login_view(request):
     token = request.POST.get('token')
     try:
-        print(token)
         # Vérification du token Firebase
         decoded_token = auth.verify_id_token(token)
         # Récupérer ou créer un utilisateur basé sur l'e-mail

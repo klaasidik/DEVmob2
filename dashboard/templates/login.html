@@ -30,6 +30,7 @@ function googleLogin() {
       // Traitement en cas de succès (ex : redirection ou mise à jour de l'interface utilisateur)
       console.log('Token vérifié avec succès');
       console.log('Token décodé :', response);
+      console.log(auth().currentUsergetIdToken());
       // Redirection vers la page d'accueil, par exemple
     },
     error: function(error) {
@@ -42,7 +43,7 @@ function googleLogin() {
   }).catch(function(error) {
     console.log(error);
   });
-
+  
   firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
    console.log(idToken);  // ...
 }).catch(function(error) {
