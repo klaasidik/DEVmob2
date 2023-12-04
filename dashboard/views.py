@@ -67,7 +67,7 @@ def custom_login_view(request):
     try:
         # Vérification du token Firebase
         decoded_token = auth.verify_id_token(token)
-        email = decoded_token.get('email')
+        print("token="+ token)
 
         # Récupérer ou créer un utilisateur basé sur l'e-mail
         user = get_or_create_user(decoded_token)
