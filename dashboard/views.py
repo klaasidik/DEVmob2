@@ -1,3 +1,4 @@
+import json
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -56,16 +57,24 @@ def google_login(request):
 def get_or_create_user(decoded_token):
     uid = decoded_token['uid']
     email = decoded_token.get('email')
-    name = decoded_token.get('name')
+    name = decoded_token.get('displayName')
 
-    user, created = User.objects.get_or_create(username=uid, defaults={'email': email})
+    user, created = User.objects.get_or_create(email=email, defaults={'nom': name})
     return user
 
 @csrf_exempt
 def custom_login_view(request):
- 
- return HttpResponse('Une erreur inconnue s’est produite', status=500)  
-  ##token = request.POST.get('token')
+    data = json.loads(request.body)
+    user = get_or_create_user(data)
+    login(request, user)
+           # Créer ou récupérer un token pour l'utilisateur
+    token, created = Token.objects.get_or_create(user=user)
+            
+    response = redirect('/index')
+    response.set_cookie('auth_token', token.key)  # stocker le token dans un cookie
+            # ou
+    request.session['auth_token'] = token.key  # stocker le token dans la session
+    return response
     #try:
         # Vérification du token Firebase
         #decoded_token = auth.verify_id_token(token)
