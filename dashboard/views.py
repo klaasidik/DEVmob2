@@ -8,6 +8,8 @@ from activityTracker.models import User
 from django.db.models import Count
 from .forms import CustomUserCreationForm
 from rest_framework.authtoken.models import Token
+from django.views.decorators.csrf import csrf_exempt
+
 import requests
 import firebase_admin
 
@@ -59,6 +61,7 @@ def get_or_create_user(decoded_token):
     user, created = User.objects.get_or_create(username=uid, defaults={'email': email, 'nom': name})
     return user
 
+@csrf_exempt
 def custom_login_view(request):
     token = request.POST.get('token')
     try:
