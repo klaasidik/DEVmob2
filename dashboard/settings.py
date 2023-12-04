@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'social_django',
     'activityTracker.apps.ActivitytrackerConfig',
     'rest_framework',
-     'rest_framework.authtoken'
+     'rest_framework.authtoken',
+     'drf_yasg',
 
 
 ]

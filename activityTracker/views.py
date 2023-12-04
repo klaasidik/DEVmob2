@@ -13,6 +13,12 @@ from rest_framework.permissions import IsAuthenticated
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def api_get_User(request):
+    """
+    Récupère et retourne tous les utilisateurs.
+
+    Cette vue retourne une liste de tous les utilisateurs enregistrés dans le système. 
+    Elle nécessite une authentification et que l'utilisateur soit authentifié.
+    """
     users=User.objects.all()
     json=serializers.serialize("json",users)
     return HttpResponse(json)
@@ -20,6 +26,13 @@ def api_get_User(request):
 @api_view(['POST'])
 @csrf_exempt
 def api_add_User(request):
+    """
+    Ajoute un nouvel utilisateur au système.
+
+    Ce endpoint permet la création d'un nouvel utilisateur. Les champs nécessaires pour 
+    la création d'un utilisateur incluent nom, prénom, date de naissance, poids, taille, 
+    email et mot de passe. La protection CSRF est désactivée pour cet endpoint.
+    """
     try:
         data = json.loads(request.body)
         user = User.create_user(
@@ -40,6 +53,13 @@ def api_add_User(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def api_add_Activity(request):
+    """
+    Ajoute une nouvelle activité pour un utilisateur spécifique.
+
+    Les données nécessaires pour la création d'une activité incluent l'identifiant de l'utilisateur 
+    (email) et des détails sur l'activité (étiquette, données de gyroscope, données d'accélération, 
+    et données de localisation). L'utilisateur doit être authentifié pour accéder à cet endpoint.
+    """
     try:
         data = json.loads(request.body)
         user_id = data.get('email')  
@@ -67,6 +87,12 @@ def api_add_Activity(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def delete_user(request, email):
+    """
+    Supprime un utilisateur spécifié par son email.
+
+    Ce endpoint supprime l'utilisateur correspondant à l'email fourni. Il requiert 
+    l'authentification et des permissions d'utilisateur authentifié.
+    """
     try:
         user = User.objects.get(email=email)
         user.delete()
@@ -78,6 +104,12 @@ def delete_user(request, email):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def disable_user(request, email):
+    """
+    Active ou désactive le statut d'utilisateur superuser basé sur son email.
+
+    Ce endpoint inverse le statut de superuser pour l'utilisateur spécifié. 
+    L'opération nécessite que l'utilisateur appelant soit authentifié et disposant des permissions nécessaires.
+    """
     try:
         user = User.objects.get(email=email)
         user.is_superuser = not user.is_superuser
@@ -90,6 +122,12 @@ def disable_user(request, email):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def edit_user(request, email):
+    """
+    Modifie les informations d'un utilisateur spécifié par son email.
+
+    Permet la mise à jour des détails de l'utilisateur, y compris nom, prénom, date de naissance, 
+    poids, taille et mot de passe. L'utilisateur doit être authentifié pour effectuer cette opération.
+    """
     try:
         data = json.loads(request.body)
         user = User.edit_user(
