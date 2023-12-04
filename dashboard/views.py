@@ -9,8 +9,6 @@ from django.db.models import Count
 from .forms import CustomUserCreationForm
 from rest_framework.authtoken.models import Token
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
-
 
 import requests
 import firebase_admin
@@ -70,13 +68,13 @@ def custom_login_view(request):
         decoded_token = auth.verify_id_token(token)
         # Récupérer ou créer un utilisateur basé sur l'e-mail
         user = get_or_create_user(decoded_token)
-
+        
         # Connecter l'utilisateur
         login(request, user)
-        return JsonResponse({'status': 'success', 'decoded_token': decoded_token})
+        return redirect('/index')
     except auth.InvalidIdTokenError:
         # Gestion des tokens invalides
-        return JsonResponse({'status': 'error', 'message': 'Invalid token'}, status=401)
+        return redirect('/login')
 
 
 
