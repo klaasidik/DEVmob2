@@ -66,6 +66,7 @@ def get_or_create_user(decoded_token):
 def custom_login_view(request):
     data = json.loads(request.body)
     user = get_or_create_user(data)
+    user.backend ='django.contrib.auth.backends.ModelBackend'
     login(request, user)
            # Créer ou récupérer un token pour l'utilisateur
     token, created = Token.objects.get_or_create(user=user)
