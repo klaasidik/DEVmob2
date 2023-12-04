@@ -153,7 +153,17 @@ STATICFILES_DIRS = [
 ]
 
 # Chemin vers  fichier de clé privée 
-cred = credentials.Certificate(os.path.join(BASE_DIR, 'privee/dashboard-101c3-firebase-adminsdk-sbe9w-f730277c79.json'))
 
 # Initialisation de l'application Firebase Admin
-firebase_admin.initialize_app(cred)
+
+try:
+    # Si Firebase n'a pas été initialisé précédemment, initialisez-le
+    if not firebase_admin._apps:
+        cred = credentials.Certificate(os.path.join(BASE_DIR, 'privee\dashboard-101c3-firebase-adminsdk-sbe9w-f730277c79.json'))
+        firebase_admin.initialize_app(cred)
+    
+    # Tenter une opération simple, comme obtenir les paramètres de configuration
+    app = firebase_admin.get_app()
+    print("Firebase est correctement initialisé :", app.name)
+except Exception as e:
+    print("Erreur lors de l'initialisation de Firebase :", str(e))
