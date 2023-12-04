@@ -63,18 +63,11 @@ def get_or_create_user(decoded_token):
 @csrf_exempt
 def custom_login_view(request):
     token = request.POST.get('token')
-    try:
+  
         # Vérification du token Firebase
-        decoded_token = auth.verify_id_token(token)
-        # Récupérer ou créer un utilisateur basé sur l'e-mail
-        user = get_or_create_user(decoded_token)
-        
-        # Connecter l'utilisateur
-        login(request, user)
-        return redirect('/index')
-    except auth.InvalidIdTokenError:
-        # Gestion des tokens invalides
-        return redirect('/login')
+    decoded_token = auth.verify_id_token(token)
+    print(decoded_token)
+
 
 
 
