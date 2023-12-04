@@ -9,6 +9,8 @@ from django.db.models import Count
 from .forms import CustomUserCreationForm
 from rest_framework.authtoken.models import Token
 from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+
 
 import requests
 import firebase_admin
@@ -24,7 +26,7 @@ def register(request):
         form = CustomUserCreationForm()
     return render(request, 'register.html', {'form': form})
 
-
+@csrf_exempt
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -45,7 +47,6 @@ def login_view(request):
     return render(request, 'login.html', {'form': form})
 
 def google_login(request):
-    print(request.user)
     # Ici, vous récupérerez les informations de l'utilisateur
     if not request.user.is_authenticated:
         return redirect('social:begin', backend='google-oauth2')
@@ -58,7 +59,7 @@ def get_or_create_user(decoded_token):
     email = decoded_token.get('email')
     name = decoded_token.get('name')
 
-    user, created = User.objects.get_or_create(username=uid, defaults={'email': email, 'nom': name})
+    user, created = User.objects.get_or_create(username=uid, defaults={'email': email})
     return user
 
 @csrf_exempt
@@ -67,17 +68,15 @@ def custom_login_view(request):
     try:
         # Vérification du token Firebase
         decoded_token = auth.verify_id_token(token)
-        print("token="+ token)
-
         # Récupérer ou créer un utilisateur basé sur l'e-mail
         user = get_or_create_user(decoded_token)
-        
+
         # Connecter l'utilisateur
         login(request, user)
-        return redirect('/index')
+        return JsonResponse({'status': 'success', 'decoded_token': decoded_token})
     except auth.InvalidIdTokenError:
         # Gestion des tokens invalides
-        return redirect('/login')
+        return JsonResponse({'status': 'error', 'message': 'Invalid token'}, status=401)
 
 
 
