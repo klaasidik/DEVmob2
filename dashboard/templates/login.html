@@ -28,19 +28,37 @@
         const provider = new GoogleAuthProvider();
         signInWithPopup(auth, provider)
             .then((result) => {
-                const credential = GoogleAuthProvider.credentialFromResult(result);
-                const token = credential.accessToken;
                 const user = result.user;
-                console.log(user);
-                // Handle the signed-in user info.
+                // Envoyer les données de l'utilisateur à Django
+                fetch('/login_firebase/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken') // Assurez-vous d'envoyer le CSRF token
+                    },
+                    body: JSON.stringify({
+                        uid: user.uid,
+                        email: user.email,
+                        displayName: user.displayName
+                        // Vous pouvez ajouter d'autres champs selon les besoins
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    // Gérer la réponse ici
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
             })
             .catch((error) => {
-                // Handle Errors here.
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                console.error("Error during authentication:", errorCode, errorMessage,error);
+                console.error("Error during authentication:", errorCode, errorMessage, error);
             });
-    }
+    } 
+    
 
     // Add event listener to login button
     const loginButton = document.getElementById('login');
