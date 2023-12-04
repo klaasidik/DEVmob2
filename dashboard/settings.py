@@ -158,5 +158,6 @@ STATICFILES_DIRS = [
 
     # Si Firebase n'a pas été initialisé précédemment, initialisez-le
 cred = credentials.Certificate(os.path.join(BASE_DIR, 'privee/dashboard-101c3-firebase-adminsdk-sbe9w-f730277c79.json'))
-firebase_admin.initialize_app(cred)
+app=firebase_admin.initialize_app(cred)
+print(app.project_id)
 

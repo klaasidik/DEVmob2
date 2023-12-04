@@ -41,7 +41,14 @@ function googleLogin() {
     // Vous pouvez utiliser AJAX ou rediriger avec le token en tant que paramètre
   }).catch(function(error) {
     console.log(error);
-  });}
+  });
+
+  firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
+   console.log(idToken);  // ...
+}).catch(function(error) {
+  // Handle error
+});
+}
 
 </script>
 
