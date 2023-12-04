@@ -18,7 +18,7 @@ function googleLogin() {
   var provider = new firebase.auth.GoogleAuthProvider();
   firebase.auth().signInWithPopup(provider).then(function(result) {
     // Le token d'authentification Firebase
-    var token = result.credential.accessToken;
+    var token = result.credential.idToken;
     console.log(result.credential);
     $.ajax({
     url: '/login_firebase/',  // L'URL de votre vue Django pour traiter le token
