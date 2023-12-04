@@ -34,32 +34,32 @@
                 console.log(user);
                 // Envoyer les données de l'utilisateur à Django
                 fetch('/login_firebase/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        //'X-CSRFToken': getCookie('csrftoken') // Assurez-vous d'envoyer le CSRF token
-                    },
-                    body: JSON.stringify({
-                        uid: user.uid,
-                        email: user.email,
-                        displayName: user.displayName
-                        // Vous pouvez ajouter d'autres champs selon les besoins
-                    })
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
-            }).then((response) => {
-    if (response.ok) {
-        window.location.href = '/index';  // Rediriger vers /index si la requête a réussi
-    } else {
-        throw new Error('La requête a échoué');
-    }
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        //'X-CSRFToken': getCookie('csrftoken') // Assurez-vous d'envoyer le CSRF token
+    },
+    body: JSON.stringify({
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName
+        // Vous pouvez ajouter d'autres champs selon les besoins
+    })
 })
-            .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                console.error("Error during authentication:", errorCode, errorMessage, error);
+.then(response => {
+    if (!response.ok) {
+        throw new Error('La requête a échoué avec le statut ' + response.status);
+    }
+    return response.text();  // ou response.json() si vous attendez un JSON
+})
+.then(data => {
+    // Gérer la réponse ici
+    window.location.href = '/index';  // Rediriger vers /index si la requête a réussi
+})
+.catch(error => {
+    console.error('Error:', error);
+});
+
             });
     } 
     
