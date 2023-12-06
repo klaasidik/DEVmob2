@@ -1,5 +1,9 @@
+{% load static %}
 <html>
 <head>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'dashboard/style.css'  %}">
+
 <script type="module">
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
@@ -70,13 +74,55 @@
 </script>
 </head>
 <body>
-<h2>Login</h2>
-<form method="post">
+    <main>
+        <div class="container">
+    
+          <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+            <div class="container">
+              <div class="row justify-content-center">
+                <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+    
+                  <div class="d-flex justify-content-center py-4">
+                    <a href="" class="logo d-flex align-items-center w-auto">
+                      <img src="{% static 'dashboard/logo.jpg' %}"  alt="">
+                      <span class="d-none d-lg-block">Dashboard Admin</span>
+                    </a>
+                  </div><!-- End Logo -->
+    
+                  <div class="card mb-3">
+    
+                    <div class="card-body">
+    
+                      <div class="pt-4 pb-2">
+                        <h5 class="card-title text-center pb-0 fs-4">Connexion</h5>
+                        <p class="text-center small">Entrer votre Email et votre mot de passe</p>
+                      </div>
+<form method="post" class="row g-3 needs-validation" novalidate>
+    <div class="col-12">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Login</button>
+    </div>
+    <div class="col-12">
+    <button type="submit" class="btn btn-primary w-100">Connexion</button>
+    </div>
 </form>
-<button id="login">Se connecter avec Google</button>
+<div class="col-12">
+<button id="login" class="btn btn-primary w-100">Se connecter avec Google</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 
+</section>
+
+</div>
+</main><!-- End #main -->
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.9/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
 </body>
 </html>

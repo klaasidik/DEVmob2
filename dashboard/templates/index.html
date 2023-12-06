@@ -32,13 +32,13 @@
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
             <img src="../static/dashboard/logo.jpg" alt="Profile" class="rounded-circle">
-            <span class="d-none d-md-block dropdown-toggle ps-2">K. Anderson</span>
+            <span class="d-none d-md-block dropdown-toggle ps-2">Sidik</span>
           </a><!-- End Profile Iamge Icon -->
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
-              <h6>Kevin Anderson</h6>
-              <span>Web Designer</span>
+              <h6>Sidik</h6>
+
             </li>
             <li>
               <hr class="dropdown-divider">
@@ -98,6 +98,8 @@
                         <th scope="col">Nom</th>
                         <th scope="col">Nombre d'activité</th>
                         <th scope="col">date/heure de la dernière connexion</th>
+                        <th scope="col">Permission</th>
+                        <th scope="col"></th>
                         <th scope="col">Status</th>
                         <th scope="col"></th>
                         <th scope="col"></th>
@@ -111,19 +113,38 @@
                         <td>{{ user.nb_activ }}</td>
                         <td>{{ user.last_login }}</td>
                         {% if user.is_superuser %}
-                        <td><span class="badge bg-success">Activé</span></td>
+                        <td><span class="badge bg-success">Administrateur</span></td>
                         {% else %}
-                        <td><span class="badge bg-danger">Désactivé</span></td>
+                        <td><span class="badge bg-danger">Utilisateur</span></td>
+                        {% endif %}
+
+                        <td> 
+                          <button style="background: none; border: none; cursor: pointer;" onclick="disablePermission('{{ user.email }}',this)">
+                            {% if not user.is_superuser %}
+                            <i class="fa-solid fa-circle-check icone-permission" style="color: #03c700;"></i>
+                            {% else %}
+                           <i class="fa-solid fa-ban icone-permission" style="color: #fa0000;"></i> 
+                         {% endif %}
+                        </button></td>
+
+
+                        {% if user.is_active %}
+                        <td><span class="badge bg-success active ">Activé</span></td>
+                        {% else %}
+                        <td><span class="badge bg-danger active">Désactivé</span></td>
                         {% endif %}
 
                         <td> 
                           <button style="background: none; border: none; cursor: pointer;" onclick="disableUser('{{ user.email }}',this)">
-                            {% if not user.is_superuser %}
-                            <i class="fa-solid fa-circle-check" style="color: #03c700;"></i>
+                            {% if not user.active %}
+                            <i class="fa-solid fa-circle-check icone-statut" style="color: #03c700;"></i>
                             {% else %}
-                           <i class="fa-solid fa-ban" style="color: #fa0000;"></i> 
+                           <i class="fa-solid fa-ban icone-statut" style="color: #fa0000;"></i> 
                          {% endif %}
                         </button></td>
+
+
+
                         <td><button style="background: none; border: none; cursor: pointer;" onclick="deleteUser('{{ user.email }}')"><i class="fa-solid fa-trash fa-bounce" style="color: #ff0000;"></i></button></td>
                       </tr>
                       {% endfor %}
@@ -171,6 +192,51 @@ const authToken = getCookie('auth_token');
       }
     });
 }
+
+function disablePermission(email,buttonElement) {
+  const escapedEmail = email.replace(/[@.]/g, "\\$&"); 
+  const action = status ? 'disable' : 'enable';
+  fetch(`/apimob/permission/${email}/`, { 
+    method: 'PATCH',
+    headers: {
+      'Authorization': `Token ${authToken}`  
+    }
+  })
+    .then(response => {
+     if(response.ok) {
+        const statusBadge = document.querySelector(`#user-row-${escapedEmail} .badge`);
+        const icon = buttonElement.querySelector('.icone-permission');
+        if (statusBadge && icon) {
+          // Mettez à jour l'état de l'utilisateur dans l'interface utilisateur
+          if (statusBadge.textContent === 'Administrateur') {
+            statusBadge.textContent = 'Utilisateur';
+            statusBadge.classList.remove('bg-success');
+            statusBadge.classList.add('bg-danger');
+
+            
+            icon.classList.remove('fa-ban');
+            icon.classList.add('fa-circle-check');
+            icon.style.color = "#03c700";
+
+
+          } else {
+            statusBadge.textContent = 'Administrateur';
+            statusBadge.classList.remove('bg-danger');
+            statusBadge.classList.add('bg-success');
+
+            icon.classList.remove('fa-circle-check');
+            icon.classList.add('fa-ban');
+            icon.style.color = "#fa0000";
+
+          }
+        }
+      } else {
+        alert('Erreur lors de la désactivation de l’utilisateur');
+      }
+    });
+}
+
+
 function disableUser(email,buttonElement) {
   const escapedEmail = email.replace(/[@.]/g, "\\$&"); 
   const action = status ? 'disable' : 'enable';
@@ -182,8 +248,9 @@ function disableUser(email,buttonElement) {
   })
     .then(response => {
      if(response.ok) {
-        const statusBadge = document.querySelector(`#user-row-${escapedEmail} .badge`);
-        const icon = buttonElement.querySelector('i');
+        const statusBadge = document.querySelector(`#user-row-${escapedEmail} .active`);
+        const icon = buttonElement.querySelector('.icone-statut');
+        console.log( statusBadge && icon);
         if (statusBadge && icon) {
           // Mettez à jour l'état de l'utilisateur dans l'interface utilisateur
           if (statusBadge.textContent === 'Activé') {

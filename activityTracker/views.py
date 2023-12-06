@@ -23,6 +23,31 @@ def api_get_User(request):
     json=serializers.serialize("json",users)
     return HttpResponse(json)
 
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def api_get_Activity(request,email=None):
+    """
+    Récupère et retourne les activités d'un utilisateur spécifique ou une liste vide si aucun email n'est spécifié.
+
+    Cette vue retourne une liste des activités pour un utilisateur spécifié par son email. 
+    Si aucun email n'est fourni, une liste vide est retournée. Elle nécessite une authentification 
+    et que l'utilisateur soit authentifié.
+    """
+
+    if email:
+        # Récupérer les activités pour l'utilisateur spécifié
+        activities = Activity.objects.filter(user__email=email)
+    else:
+        # Retourner une liste vide si aucun email n'est spécifié
+        activities = Activity.objects.none()
+    
+    json_data = serializers.serialize("json", activities)
+    return HttpResponse(json_data)
+
+
+
 @api_view(['POST'])
 @csrf_exempt
 def api_add_User(request):
@@ -103,9 +128,9 @@ def delete_user(request, email):
 @api_view(['PATCH'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def disable_user(request, email):
+def permission_user(request, email):
     """
-    Active ou désactive le statut d'utilisateur superuser basé sur son email.
+    Active ou désactive le permission d'utilisateur superuser basé sur son email.
 
     Ce endpoint inverse le statut de superuser pour l'utilisateur spécifié. 
     L'opération nécessite que l'utilisateur appelant soit authentifié et disposant des permissions nécessaires.
@@ -113,6 +138,24 @@ def disable_user(request, email):
     try:
         user = User.objects.get(email=email)
         user.is_superuser = not user.is_superuser
+        user.save()
+        return HttpResponse('Utilisateur permission changé avec succès', status=200)
+    except User.DoesNotExist:
+        return HttpResponse('Utilisateur non trouvé', status=404)
+    
+@api_view(['PATCH'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def status_user(request, email):
+    """
+    Active ou désactive le permission d'utilisateur superuser basé sur son email.
+
+    Ce endpoint inverse le statut de superuser pour l'utilisateur spécifié. 
+    L'opération nécessite que l'utilisateur appelant soit authentifié et disposant des permissions nécessaires.
+    """
+    try:
+        user = User.objects.get(email=email)
+        user.is_active = not user.is_active
         user.save()
         return HttpResponse('Utilisateur désactivé avec succès', status=200)
     except User.DoesNotExist:

@@ -24,9 +24,11 @@ urlpatterns = [
   path('addAct', views.api_add_Activity),
   path('addUser', views.api_add_User),
   path('delete/<str:email>/',views.delete_user, name='delete_user'),
-  path('disable/<str:email>/', views.disable_user, name='disable_user'),
+  path('permission/<str:email>/', views.permission_user, name='disable_user'),
+   path('disable/<str:email>/', views.status_user, name='disable_user'),
   path('editUSer/<str:email>/', views.edit_user, name='edit_user'),
   path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+   path('activities/', views.api_get_Activity, name='get_activities'),
 
    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
